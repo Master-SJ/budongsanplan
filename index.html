@@ -486,7 +486,7 @@ input[type=number] { -moz-appearance: textfield; }
         <div class="fg">
           <span class="lbl">매수 희망 가격</span>
           <div class="iw">
-            <input type="number" id="buyPrice" placeholder="50000" oninput="calc()">
+            <input type="text" inputmode="decimal" id="buyPrice" placeholder="50000" oninput="calc()">
             <span class="u">만원</span>
           </div>
           <div id="buyPriceHint" style="display:none"></div>
@@ -530,7 +530,7 @@ input[type=number] { -moz-appearance: textfield; }
           <div class="fg">
             <span class="lbl">기타 비용</span>
             <div class="iw">
-              <input type="number" id="otherCost" placeholder="0" oninput="calc()">
+              <input type="text" inputmode="decimal" id="otherCost" placeholder="0" oninput="calc()">
               <span class="u">만원</span>
             </div>
           </div>
@@ -593,14 +593,14 @@ input[type=number] { -moz-appearance: textfield; }
             <div class="fg">
               <span class="lbl">예상 매도 가격</span>
               <div class="iw">
-                <input type="number" id="sellPrice" placeholder="0" oninput="calc()">
+                <input type="text" inputmode="decimal" id="sellPrice" placeholder="0" oninput="calc()">
                 <span class="u">만원</span>
               </div>
             </div>
             <div class="fg">
               <span class="lbl">취득 원가</span>
               <div class="iw">
-                <input type="number" id="sellBasis" placeholder="0" oninput="calc()">
+                <input type="text" inputmode="decimal" id="sellBasis" placeholder="0" oninput="calc()">
                 <span class="u">만원</span>
               </div>
             </div>
@@ -612,7 +612,7 @@ input[type=number] { -moz-appearance: textfield; }
               <span class="badge b-warn" style="text-transform:none;letter-spacing:0">매도 시 상환</span>
             </span>
             <div class="iw">
-              <input type="number" id="sellMortgBal" placeholder="0" oninput="calc()">
+              <input type="text" inputmode="decimal" id="sellMortgBal" placeholder="0" oninput="calc()">
               <span class="u">만원</span>
             </div>
             <div class="mortg-bal-hint" id="mortgBalHint" style="display:none"></div>
@@ -661,7 +661,7 @@ input[type=number] { -moz-appearance: textfield; }
           <div class="fg">
             <span class="lbl">생애최초 취득세 감면 추징액</span>
             <div class="iw">
-              <input type="number" id="penalty" placeholder="0" oninput="calc()">
+              <input type="text" inputmode="decimal" id="penalty" placeholder="0" oninput="calc()">
               <span class="u">만원</span>
             </div>
           </div>
@@ -717,14 +717,14 @@ input[type=number] { -moz-appearance: textfield; }
           <div class="fg">
             <span class="lbl">연간 소득 (세전)</span>
             <div class="iw">
-              <input type="number" id="income" placeholder="6000" oninput="calc()">
+              <input type="text" inputmode="decimal" id="income" placeholder="6000" oninput="calc()">
               <span class="u">만원</span>
             </div>
           </div>
           <div class="fg">
             <span class="lbl">보유 현금</span>
             <div class="iw">
-              <input type="number" id="cash" placeholder="0" oninput="calc()">
+              <input type="text" inputmode="decimal" id="cash" placeholder="0" oninput="calc()">
               <span class="u">만원</span>
             </div>
           </div>
@@ -733,7 +733,7 @@ input[type=number] { -moz-appearance: textfield; }
         <div class="fg">
           <span class="lbl">기존 대출 연간 원리금</span>
           <div class="iw">
-            <input type="number" id="existDebt" placeholder="0" oninput="calc()">
+            <input type="text" inputmode="decimal" id="existDebt" placeholder="0" oninput="calc()">
             <span class="u">만원/년</span>
           </div>
         </div>
@@ -754,7 +754,7 @@ input[type=number] { -moz-appearance: textfield; }
           <div class="fg">
             <span class="lbl">계약 금리 (실납부 기준)</span>
             <div class="iw">
-              <input type="number" id="mRate" value="4.5" step="0.1" oninput="calc()">
+              <input type="number" id="mRate" value="4.5" step="0.1" min="0" onwheel="this.blur()" oninput="calc()">
               <span class="u">%</span>
             </div>
           </div>
@@ -787,14 +787,14 @@ input[type=number] { -moz-appearance: textfield; }
             <div class="fg">
               <span class="lbl">주담대 가산금리 <span style="font-weight:400;text-transform:none">(지역 변경 시 자동)</span></span>
               <div class="iw">
-                <input type="number" id="stressRate" value="3.0" step="0.05" min="0" oninput="calc()">
+                <input type="number" id="stressRate" value="3.0" step="0.05" min="0" onwheel="this.blur()" oninput="calc()">
                 <span class="u">%</span>
               </div>
             </div>
             <div class="fg">
               <span class="lbl">신용대출 가산금리</span>
               <div class="iw">
-                <input type="number" id="cStressRate" value="1.5" step="0.05" min="0" oninput="calc()">
+                <input type="number" id="cStressRate" value="1.5" step="0.05" min="0" onwheel="this.blur()" oninput="calc()">
                 <span class="u">%</span>
               </div>
             </div>
@@ -837,7 +837,7 @@ input[type=number] { -moz-appearance: textfield; }
           <div class="fg">
             <span class="lbl">신용대출 금리</span>
             <div class="iw">
-              <input type="number" id="cRate" value="5.5" step="0.1" oninput="calc()">
+              <input type="number" id="cRate" value="5.5" step="0.1" min="0" onwheel="this.blur()" oninput="calc()">
               <span class="u">%</span>
             </div>
           </div>
