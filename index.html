@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>부동산 매수 자금세팅판</title>
+<style>
+/* ═══════════════════════════════════════
+   TOSS-INSPIRED DESIGN SYSTEM
+═══════════════════════════════════════ */
+:root {
+  /* ── 기본 팔레트 ── */
+  --bg:          #F2F4F6;
+  --card:        #FFFFFF;
+  --input-bg:    #F2F4F6;
+  --border:      #E5E8EB;
+
+  /* ── 브랜드 컬러 ── */
+  --blue:        #0064FF;
+  --blue-lt:     #EBF3FF;
+  --blue-dim:    rgba(0,100,255,.09);
+  --green:       #00C073;
+  --green-lt:    #E5F9F1;
+  --purple:      #6B4EFF;
+  --purple-lt:   #F0EEFF;
+  --orange:      #FF6B2B;
+  --orange-lt:   #FFF0E9;
+  --red:         #F04452;
+  --red-lt:      #FFEBEC;
+  --yellow:      #F5A623;
+  --yellow-lt:   #FFF8E6;
+  --teal:        #00B4D8;
+  --teal-lt:     #E0F7FC;
+
+  /* ── 하위호환 (JS var() 참조용) ── */
+  --danger:      #F04452;
+  --success:     #00C073;
+  --sum:         #FF6B2B;
+
+  /* ── 텍스트 ── */
+  --t1:  #191F28;
+  --t2:  #4E5968;
+  --t3:  #8B95A1;
+  --t4:  #B0B8C1;
+
+  /* ── 치수 ── */
+  --r-xl:  20px;
+  --r-lg:  16px;
+  --r-md:  12px;
+  --r-sm:  8px;
+  --sh:    0 2px 16px rgba(0,0,0,.06), 0 1px 4px rgba(0,0,0,.03);
+  --sh-sm: 0 1px 6px rgba(0,0,0,.07);
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo',
+               'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  background: var(--bg);
+  color: var(--t1);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ════════════════════ HEADER ════════════════════ */
+.site-header {
+  position: sticky; top: 0; z-index: 200;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: 60px;
+  display: flex; align-items: center; gap: 1rem;
+}
+.header-logo {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.15rem; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,100,255,.35);
+}
+.header-titles h1 { font-size: .97rem; font-weight: 800; letter-spacing: -.35px; color: var(--t1); }
+.header-titles p  { font-size: .72rem; color: var(--t3); margin-top: 0; }
+.header-date {
+  margin-left: auto;
+  font-size: .7rem; font-weight: 600; color: var(--t3);
+  background: var(--bg); padding: .22rem .65rem;
+  border-radius: 99px; border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+/* ════════════════════ LAYOUT ════════════════════ */
+.wrap { max-width: 1100px; margin: 0 auto; padding: 1.25rem 1rem 4rem; }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+@media (max-width: 820px) { .grid-2 { grid-template-columns: 1fr; } }
+
+/* ════════════════════ CARD ════════════════════ */
+.card {
+  background: var(--card);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh);
+  overflow: hidden;
+}
+
+/* 카드 헤더 */
+.card-head {
+  padding: 1.15rem 1.4rem .95rem;
+  display: flex; align-items: center; gap: .85rem;
+}
+.card-ico {
+  width: 42px; height: 42px; border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.c-buy  .card-ico { background: var(--blue-lt); }
+.c-sell .card-ico { background: var(--green-lt); }
+.c-loan .card-ico { background: var(--purple-lt); }
+.c-sum  .card-ico { background: var(--orange-lt); }
+
+.card-ttl { flex: 1; }
+.card-ttl h2 { font-size: .97rem; font-weight: 800; color: var(--t1); letter-spacing: -.3px; }
+.card-ttl small { font-size: .72rem; color: var(--t3); display: block; margin-top: 1px; }
+
+/* 섹션 뱃지 (카드 헤더 오른쪽) */
+.card-head-badge {
+  font-size: .68rem; font-weight: 700; padding: .22rem .6rem;
+  border-radius: 99px; flex-shrink: 0;
+}
+.c-buy  .card-head-badge { background: var(--blue-lt);   color: #1d4ed8; }
+.c-sell .card-head-badge { background: var(--green-lt);  color: #065f46; }
+.c-loan .card-head-badge { background: var(--purple-lt); color: #4c1d95; }
+.c-sum  .card-head-badge { background: var(--orange-lt); color: #9a3412; }
+
+.card-sep { height: 1px; background: var(--border); margin: 0 1.4rem; }
+.card-body { padding: 1.2rem 1.4rem 1.5rem; }
+
+/* ════════════════════ FORM ════════════════════ */
+.fg { margin-bottom: .85rem; min-width: 0; }
+
+.fg > .lbl {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: .71rem; font-weight: 700; color: var(--t3);
+  letter-spacing: .04em; margin-bottom: .38rem;
+}
+
+/* 인풋 래퍼 (Toss 스타일 — 기본 회색 bg, 포커스 시 흰색+파란 테두리) */
+.iw {
+  display: flex; align-items: center;
+  background: var(--input-bg);
+  border-radius: var(--r-md);
+  border: 1.5px solid transparent;
+  transition: background .18s, border-color .18s, box-shadow .18s;
+  overflow: hidden;
+  min-width: 0; width: 100%;
+}
+.iw:focus-within {
+  background: #fff;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-dim);
+}
+.iw input {
+  flex: 1; border: none; outline: none; background: transparent;
+  padding: .62rem .75rem;
+  font-size: .93rem; font-weight: 600; color: var(--t1);
+  min-width: 0; width: 0;
+}
+.iw input::placeholder { font-weight: 400; color: var(--t4); font-size: .85rem; }
+.iw .u {
+  padding: 0 .65rem; font-size: .72rem; color: var(--t3); font-weight: 500;
+  border-left: 1px solid var(--border); white-space: nowrap; flex-shrink: 0;
+  height: 100%; display: flex; align-items: center;
+}
+
+/* 셀렉트 */
+.fg select {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1.5px solid transparent;
+  border-radius: var(--r-md);
+  padding: .62rem .9rem;
+  font-size: .87rem; font-weight: 500; color: var(--t1);
+  outline: none; cursor: pointer;
+  transition: background .18s, border-color .18s, box-shadow .18s;
+  appearance: auto;
+}
+.fg select:focus {
+  background: #fff;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-dim);
+}
+
+/* 날짜 input */
+.fg input[type=text].date-inp {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1.5px solid transparent;
+  border-radius: var(--r-md);
+  padding: .62rem .9rem;
+  font-size: .87rem; font-weight: 600; color: var(--t1);
+  font-family: inherit;
+  outline: none; cursor: text;
+  transition: background .18s, border-color .18s;
+  letter-spacing: .03em;
+}
+.fg input[type=text].date-inp:focus {
+  background: #fff;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(0,192,115,.12);
+}
+.fg input[type=text].date-inp::placeholder {
+  font-weight: 400; color: var(--t4); letter-spacing: 0;
+}
+
+/* number 스핀버튼 숨기기 — 클릭 시 -1 방지 */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
+
+/* 2열 */
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+@media (max-width: 440px) { .frow { grid-template-columns: 1fr; } }
+
+/* 체크박스 */
+.cbg { display: flex; align-items: center; gap: .5rem; padding: .3rem 0; cursor: pointer; }
+.cbg input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; }
+.cbg label { font-size: .82rem; color: var(--t2); cursor: pointer; font-weight: 500; }
+
+/* 구분선 */
+.divider { border: none; border-top: 1px solid var(--border); margin: .85rem 0; }
+
+/* 소제목 */
+.sec-lbl {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: .68rem; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--t3); margin-bottom: .55rem;
+}
+.sec-lbl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ════════════════════ HINT CHIPS ════════════════════ */
+.hc-hint {
+  margin-top: .42rem; padding: .42rem .7rem;
+  border-radius: var(--r-md); font-size: .74rem; line-height: 1.5; font-weight: 500;
+}
+.hc-ok   { background: var(--green-lt);  color: #065f46; }
+.hc-warn { background: var(--yellow-lt); color: #7c4700; }
+.hc-bad  { background: var(--red-lt);    color: #9b1c1c; }
+
+/* 날짜 계산 결과 */
+.date-result {
+  background: var(--green-lt); border-radius: var(--r-md);
+  padding: .5rem .8rem; font-size: .77rem; color: #065f46;
+  margin-top: .5rem; display: flex; gap: 1.4rem; flex-wrap: wrap;
+}
+.date-result strong { font-weight: 700; }
+
+/* 가격 힌트 */
+#buyPriceHint {
+  display: inline-block; margin-top: .22rem;
+  font-size: .72rem; font-weight: 700; color: var(--blue);
+  background: var(--blue-lt); padding: .08rem .5rem; border-radius: 99px;
+}
+
+/* ════════════════════ TOGGLE ════════════════════ */
+.toggle-row {
+  display: flex; align-items: center; gap: .75rem;
+  padding: .72rem .95rem;
+  background: var(--input-bg); border-radius: var(--r-md);
+  cursor: pointer; margin-bottom: 1rem; user-select: none;
+  transition: background .15s;
+}
+.toggle-row:hover { background: #E8EBED; }
+.sw { position: relative; width: 42px; height: 23px; flex-shrink: 0; }
+.sw input { position: absolute; opacity: 0; width: 0; height: 0; }
+.sw-track {
+  position: absolute; inset: 0;
+  background: #CBD5E0; border-radius: 23px; transition: .25s;
+}
+.sw-track::before {
+  content: ''; position: absolute;
+  width: 17px; height: 17px; left: 3px; bottom: 3px;
+  background: #fff; border-radius: 50%;
+  transition: .25s; box-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+.sw input:checked + .sw-track { background: var(--blue); }
+.sw input:checked + .sw-track::before { transform: translateX(19px); }
+.toggle-label { font-size: .88rem; font-weight: 700; color: var(--t1); }
+.toggle-sub   { margin-left: auto; font-size: .72rem; color: var(--t3); }
+.collapsed { display: none !important; }
+
+/* ════════════════════ RESULT BOX ════════════════════ */
+.result-box {
+  background: var(--bg);
+  border-radius: var(--r-lg);
+  padding: .9rem 1rem 1rem;
+  margin-top: .9rem;
+}
+.result-box .rb-title {
+  font-size: .67rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--t3); margin-bottom: .6rem;
+}
+
+/* 결과 행 */
+.ri {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .33rem 0; font-size: .84rem;
+  border-bottom: 1px solid var(--border);
+}
+.ri:last-of-type { border-bottom: none; }
+.ri .rl { color: var(--t2); }
+.ri .rv { font-weight: 700; color: var(--t1); }
+
+/* 합계 행 */
+.rt {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #fff; border: 1.5px solid var(--border);
+  border-radius: var(--r-md); padding: .65rem .9rem; margin-top: .6rem;
+  font-weight: 800; font-size: .94rem;
+}
+.rt .rv { color: var(--blue); }
+
+/* ════════════════════ BADGE ════════════════════ */
+.badge {
+  display: inline-block; padding: .15rem .5rem;
+  border-radius: 99px; font-size: .67rem; font-weight: 700; letter-spacing: .01em;
+}
+.b-ok     { background: var(--green-lt);  color: #065f46; }
+.b-warn   { background: var(--yellow-lt); color: #7c4700; }
+.b-info   { background: var(--blue-lt);   color: #1d4ed8; }
+.b-danger { background: var(--red-lt);    color: #9b1c1c; }
+.b-cap    { background: #FCE7F3;          color: #9d174d; }
+.b-purple { background: var(--purple-lt); color: #4c1d95; }
+
+/* ════════════════════ NOTE ════════════════════ */
+.note {
+  font-size: .71rem; color: var(--t3); margin-top: .6rem;
+  padding: .42rem .65rem; background: var(--bg);
+  border-left: 2px solid var(--border); border-radius: 0 6px 6px 0; line-height: 1.55;
+}
+
+/* ════════════════════ GAP BOX ════════════════════ */
+.gap-box {
+  border-radius: var(--r-lg); margin-top: 1rem; padding: 1rem 1.15rem;
+  display: flex; flex-direction: column; gap: .25rem;
+}
+.gap-box #gapLabel { font-size: .78rem; font-weight: 600; opacity: .8; }
+.gap-box #gapAmt   { font-size: 1.6rem; font-weight: 800; letter-spacing: -.5px; line-height: 1.15; }
+.gap-ok  { background: var(--green-lt); color: #065f46; }
+.gap-bad { background: var(--red-lt);   color: #9b1c1c; }
+
+/* ════════════════════ FUND BAR ════════════════════ */
+.fund-section { margin-top: 1rem; }
+.bar-wrap {
+  height: 40px; border-radius: var(--r-md); overflow: hidden;
+  display: flex; margin-bottom: .45rem; background: var(--border);
+}
+.bar-seg {
+  height: 100%; display: flex; align-items: center; justify-content: center;
+  font-size: .67rem; font-weight: 700; color: #fff;
+  transition: width .4s cubic-bezier(.4,0,.2,1);
+  white-space: nowrap; overflow: hidden; min-width: 0;
+}
+.bar-legend { display: flex; flex-wrap: wrap; gap: .35rem .85rem; font-size: .73rem; margin-top: .4rem; }
+.bar-legend-item { display: flex; align-items: center; gap: .3rem; }
+.bar-legend-dot { width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0; }
+
+/* ════════════════════ DSR ════════════════════ */
+.dsr-track { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; margin: .35rem 0; }
+.dsr-fill  { height: 100%; border-radius: 99px; transition: width .4s, background .4s; }
+.dsr-labels { display: flex; justify-content: space-between; font-size: .7rem; color: var(--t3); }
+
+/* ════════════════════ SUMMARY ROWS ════════════════════ */
+.sum-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .34rem 0; font-size: .86rem; border-bottom: 1px solid var(--border);
+}
+.sum-row:last-of-type { border-bottom: none; }
+.sum-row .sl { color: var(--t2); }
+.sum-row .sv { font-weight: 700; }
+.sum-total {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #fff; border-radius: var(--r-md); padding: .7rem .9rem;
+  font-weight: 800; font-size: .95rem; margin-top: .5rem;
+  border: 1.5px solid var(--border);
+}
+
+/* ════════════════════ STRESS DSR BOX ════════════════════ */
+.stress-row {
+  background: #FFFBEB; border: 1.5px solid #FDE68A;
+  border-radius: var(--r-lg); padding: .85rem 1rem; margin-bottom: .9rem;
+}
+.stress-label {
+  display: flex; align-items: center; gap: .5rem;
+  font-size: .78rem; font-weight: 700; color: #92400E; margin-bottom: .5rem;
+}
+.srt-wrap { background: #fff; border-radius: var(--r-sm); border: 1px solid #FDE68A; overflow: hidden; }
+.srt-row {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .3rem .65rem; font-size: .74rem; border-bottom: 1px solid #FEF3C7;
+}
+.srt-row:last-child { border-bottom: none; }
+.srt-row span:first-child { flex: 1; color: #92400E; }
+.srt-row strong { color: var(--t1); font-size: .83rem; }
+.stress-eff {
+  font-size: .77rem; color: var(--t2);
+  background: #fff; border: 1px solid var(--border); border-radius: var(--r-sm);
+  padding: .3rem .65rem; flex-shrink: 0; white-space: nowrap;
+}
+.stress-eff strong { color: #92400E; font-size: .85rem; }
+.stress-note { font-size: .7rem; color: #92400E; margin-top: .5rem; line-height: 1.5; }
+
+/* 기존 주담대 잔액 힌트 */
+.mortg-bal-hint {
+  margin-top: .3rem; padding: .3rem .6rem;
+  background: var(--red-lt); color: #9b1c1c;
+  border-radius: var(--r-sm); font-size: .72rem; font-weight: 500;
+}
+
+/* 서울 한도 테이블 */
+.seoul-table { width: 100%; font-size: .72rem; border-collapse: collapse; margin-top: .5rem; }
+.seoul-table th, .seoul-table td { padding: .28rem .5rem; text-align: center; border: 1px solid var(--border); }
+.seoul-table th { background: var(--bg); font-weight: 700; color: var(--t3); }
+.seoul-table .active { background: #FCE7F3; font-weight: 700; color: #9d174d; }
+
+/* ════════════════════ 자기자본 ════════════════════ */
+#equityRatioWrap .ri .rv { font-weight: 700; }
+
+/* ════════════════════ 금액 큰 숫자 (summary 하이라이트) ════════════════════ */
+.amount-hero {
+  font-size: 1.35rem; font-weight: 800; letter-spacing: -.5px; line-height: 1.15;
+}
+
+/* ════════════════════ 카드 내 숫자 강조 ════════════════════ */
+.kpi-row {
+  display: flex; gap: .6rem; flex-wrap: wrap; margin: .7rem 0 .4rem;
+}
+.kpi {
+  flex: 1; min-width: 0;
+  background: var(--bg); border-radius: var(--r-md);
+  padding: .7rem .85rem;
+}
+.kpi .kpi-label { font-size: .67rem; color: var(--t3); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; margin-bottom: .2rem; }
+.kpi .kpi-value { font-size: 1.05rem; font-weight: 800; letter-spacing: -.3px; color: var(--t1); }
+.kpi .kpi-value.blue   { color: var(--blue); }
+.kpi .kpi-value.green  { color: var(--green); }
+.kpi .kpi-value.purple { color: var(--purple); }
+.kpi .kpi-value.orange { color: var(--orange); }
+.kpi .kpi-value.red    { color: var(--red); }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ HEADER ════════════════════ -->
+<header class="site-header">
+  <div class="header-logo">🏠</div>
+  <div class="header-titles">
+    <h1>부동산 매수 자금세팅판</h1>
+    <p>취득세 · 양도세 · LTV/DSR 대출한도까지 한눈에</p>
+  </div>
+  <div class="header-date">2026년 기준</div>
+</header>
+
+<div class="wrap">
+  <div class="grid-2">
+
+    <!-- ════════════════════ 매수 부동산 정보 ════════════════════ -->
+    <div class="card c-buy">
+      <div class="card-head">
+        <div class="card-ico">🏠</div>
+        <div class="card-ttl">
+          <h2>매수 부동산</h2>
+          <small>취득 예정 부동산 정보</small>
+        </div>
+        <span class="card-head-badge">Step 1</span>
+      </div>
+      <div class="card-sep"></div>
+      <div class="card-body">
+
+        <div class="fg">
+          <span class="lbl">매수 희망 가격</span>
+          <div class="iw">
+            <input type="number" id="buyPrice" placeholder="50000" oninput="calc()">
+            <span class="u">만원</span>
+          </div>
+          <div id="buyPriceHint" style="display:none"></div>
+        </div>
+
+        <div class="frow">
+          <div class="fg">
+            <span class="lbl">취득 지역</span>
+            <select id="region" onchange="updateStressRate(); calc()">
+              <option value="seoul">서울 (투기과열)</option>
+              <option value="metro">수도권 조정지역</option>
+              <option value="non">비조정지역</option>
+            </select>
+          </div>
+          <div class="fg">
+            <span class="lbl">전용면적</span>
+            <select id="areaSize" onchange="calc()">
+              <option value="u85">85㎡ 이하</option>
+              <option value="o85">85㎡ 초과</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fg">
+          <span class="lbl">
+            현재 보유 상황
+            <span class="badge b-warn" style="text-transform:none;letter-spacing:0">취득세율 결정</span>
+          </span>
+          <select id="homeCount" onchange="updateHCHint(); calc()">
+            <option value="0">무주택자 → 첫 주택 구입</option>
+            <option value="0_sell">1주택 → 매도 완료 후 신규 매수 (취득 시 무주택)</option>
+            <option value="1_temp">1주택 → 매수 후 3년 내 기존 처분 예정 (일시적 2주택)</option>
+            <option value="1_perm">1주택 → 2주택으로 계속 보유</option>
+            <option value="2">2주택 → 추가 매수 (3주택)</option>
+            <option value="3plus">3주택 이상 → 추가 매수</option>
+          </select>
+          <div id="hcHint" class="hc-hint hc-ok">취득세: 기본세율 (1~3%) 적용</div>
+        </div>
+
+        <div class="frow">
+          <div class="fg">
+            <span class="lbl">기타 비용</span>
+            <div class="iw">
+              <input type="number" id="otherCost" placeholder="0" oninput="calc()">
+              <span class="u">만원</span>
+            </div>
+          </div>
+          <div class="fg" style="display:flex;flex-direction:column;justify-content:flex-end">
+            <div class="cbg">
+              <input type="checkbox" id="firstHome" onchange="calc()">
+              <label for="firstHome">생애최초 구입</label>
+            </div>
+            <div class="cbg">
+              <input type="checkbox" id="inclBuyBroker" checked onchange="calc()">
+              <label for="inclBuyBroker">중개수수료 포함</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 취득 비용 결과 -->
+        <div class="result-box">
+          <div class="rb-title">취득 비용 계산</div>
+          <div class="ri"><span class="rl">매수 가격</span><span class="rv" id="r-buyPrice">—</span></div>
+          <div class="ri"><span class="rl">취득세 <span id="r-acqRateBadge"></span></span><span class="rv" id="r-acqTax">—</span></div>
+          <div class="ri"><span class="rl">지방교육세</span><span class="rv" id="r-eduTax">—</span></div>
+          <div class="ri" id="row-rural" style="display:none"><span class="rl">농어촌특별세</span><span class="rv" id="r-ruralTax">—</span></div>
+          <div class="ri" id="row-discount" style="display:none"><span class="rl">생애최초 감면 (−)</span><span class="rv" style="color:var(--green)" id="r-discount">—</span></div>
+          <div class="ri" id="row-buyBroker"><span class="rl">중개수수료 (매수)</span><span class="rv" id="r-buyBroker">—</span></div>
+          <div class="ri"><span class="rl">기타 비용</span><span class="rv" id="r-otherCost">—</span></div>
+          <div class="rt"><span>총 취득 필요자금</span><span class="rv" id="r-totalBuy">—</span></div>
+        </div>
+        <div class="note">
+          취득세율: 6억↓ 1% · 6~9억 점진(1→3%) · 9억↑ 3% · 조정 2주택 8% · 3주택+ 12% · 생애최초 최대 200만원 감면(12억↓)
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════════════════ 기존 부동산 매도 ════════════════════ -->
+    <div class="card c-sell">
+      <div class="card-head">
+        <div class="card-ico">💰</div>
+        <div class="card-ttl">
+          <h2>기존 부동산 매도</h2>
+          <small>처분 예정 부동산이 있는 경우</small>
+        </div>
+        <span class="card-head-badge">Step 2</span>
+      </div>
+      <div class="card-sep"></div>
+      <div class="card-body">
+
+        <label class="toggle-row">
+          <div class="sw">
+            <input type="checkbox" id="sellToggle" onchange="toggleSell()">
+            <span class="sw-track"></span>
+          </div>
+          <span class="toggle-label">기존 부동산 처분 예정</span>
+          <span class="toggle-sub">ON으로 활성화</span>
+        </label>
+
+        <div id="sellBody" class="collapsed">
+
+          <div class="frow">
+            <div class="fg">
+              <span class="lbl">예상 매도 가격</span>
+              <div class="iw">
+                <input type="number" id="sellPrice" placeholder="0" oninput="calc()">
+                <span class="u">만원</span>
+              </div>
+            </div>
+            <div class="fg">
+              <span class="lbl">취득 원가</span>
+              <div class="iw">
+                <input type="number" id="sellBasis" placeholder="0" oninput="calc()">
+                <span class="u">만원</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="fg">
+            <span class="lbl">
+              기존 주담대 잔액
+              <span class="badge b-warn" style="text-transform:none;letter-spacing:0">매도 시 상환</span>
+            </span>
+            <div class="iw">
+              <input type="number" id="sellMortgBal" placeholder="0" oninput="calc()">
+              <span class="u">만원</span>
+            </div>
+            <div class="mortg-bal-hint" id="mortgBalHint" style="display:none"></div>
+          </div>
+
+          <div class="sec-lbl">보유·거주 기간 자동계산</div>
+          <div class="frow">
+            <div class="fg">
+              <span class="lbl">취득일 (잔금일)</span>
+              <input type="text" class="date-inp" id="acqDate" placeholder="YYYY-MM-DD" maxlength="10" oninput="autoDateFmt(this)" autocomplete="off">
+            </div>
+            <div class="fg">
+              <span class="lbl">입주일 (거주 시작)</span>
+              <input type="text" class="date-inp" id="liveDate" placeholder="YYYY-MM-DD" maxlength="10" oninput="autoDateFmt(this)" autocomplete="off">
+            </div>
+          </div>
+          <div class="fg">
+            <span class="lbl">예상 매도일</span>
+            <input type="text" class="date-inp" id="saleDate" placeholder="YYYY-MM-DD" maxlength="10" oninput="autoDateFmt(this)" autocomplete="off">
+          </div>
+          <div id="dateResult" class="date-result" style="display:none">
+            <span>📅 보유기간: <strong id="calcHoldYr">—</strong></span>
+            <span>🏠 거주기간: <strong id="calcLiveYr">—</strong></span>
+          </div>
+
+          <hr class="divider">
+
+          <div class="frow">
+            <div class="fg">
+              <span class="lbl">매도 부동산 지역</span>
+              <select id="sellArea" onchange="calc()">
+                <option value="adj">조정대상지역</option>
+                <option value="nadj">비조정대상지역</option>
+              </select>
+            </div>
+            <div class="fg">
+              <span class="lbl">매도 시 주택 수</span>
+              <select id="sellHomeCount" onchange="calc()">
+                <option value="1">1주택자</option>
+                <option value="2">2주택자</option>
+                <option value="3">3주택 이상</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="fg">
+            <span class="lbl">생애최초 취득세 감면 추징액</span>
+            <div class="iw">
+              <input type="number" id="penalty" placeholder="0" oninput="calc()">
+              <span class="u">만원</span>
+            </div>
+          </div>
+          <div class="note" style="margin-bottom:.7rem">
+            생애최초 감면 후 3년 내 추가 주택 취득 시 감면액 전액 추징 (최대 200만원 + 이자)
+          </div>
+
+          <div class="cbg" style="padding:.1rem 0 .5rem">
+            <input type="checkbox" id="inclSellBroker" checked onchange="calc()">
+            <label for="inclSellBroker">중개수수료 포함 (법정 요율 자동계산)</label>
+          </div>
+
+          <!-- 양도세 결과 -->
+          <div class="result-box">
+            <div class="rb-title">매도 수익 계산</div>
+            <div class="ri"><span class="rl">예상 매도 가격</span><span class="rv" id="r-sellPrice">—</span></div>
+            <div class="ri"><span class="rl">양도차익</span><span class="rv" id="r-cgain">—</span></div>
+            <div class="ri"><span class="rl">비과세 / 과세 여부</span><span class="rv" id="r-exempt">—</span></div>
+            <div class="ri"><span class="rl">장기보유특별공제</span><span class="rv" id="r-ltDeduct">—</span></div>
+            <div class="ri"><span class="rl">양도소득세 (지방세 포함)</span><span class="rv" id="r-cgt">—</span></div>
+            <div class="ri" id="row-sellBroker"><span class="rl">중개수수료 (매도)</span><span class="rv" id="r-sellBroker">—</span></div>
+            <div class="ri"><span class="rl">생애최초 감면 추징</span><span class="rv" id="r-penalty">—</span></div>
+            <div class="ri" id="row-sellMortg" style="display:none"><span class="rl">기존 주담대 상환 (−)</span><span class="rv" style="color:var(--red)" id="r-sellMortgBal">—</span></div>
+            <div class="rt"><span>순 매도 금액</span><span class="rv" style="color:var(--green)" id="r-netSell">—</span></div>
+          </div>
+          <div class="note">
+            ※ 1세대1주택 비과세: 2년 이상 보유 (조정 2년 거주 추가), 12억↓ 전액 비과세 · 12억 초과분만 과세 ·
+            장특공: 1주택 보유×4%+거주×4%(최대 80%) · 세무사 상담 권장
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid-2 row1 -->
+
+  <div class="grid-2">
+
+    <!-- ════════════════════ 대출 가능 분석 ════════════════════ -->
+    <div class="card c-loan">
+      <div class="card-head">
+        <div class="card-ico">🏦</div>
+        <div class="card-ttl">
+          <h2>대출 가능 분석</h2>
+          <small>소득 기반 LTV · DSR 한도 (은행권 DSR 40%)</small>
+        </div>
+        <span class="card-head-badge">Step 3</span>
+      </div>
+      <div class="card-sep"></div>
+      <div class="card-body">
+
+        <div class="frow">
+          <div class="fg">
+            <span class="lbl">연간 소득 (세전)</span>
+            <div class="iw">
+              <input type="number" id="income" placeholder="6000" oninput="calc()">
+              <span class="u">만원</span>
+            </div>
+          </div>
+          <div class="fg">
+            <span class="lbl">보유 현금</span>
+            <div class="iw">
+              <input type="number" id="cash" placeholder="0" oninput="calc()">
+              <span class="u">만원</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="fg">
+          <span class="lbl">기존 대출 연간 원리금</span>
+          <div class="iw">
+            <input type="number" id="existDebt" placeholder="0" oninput="calc()">
+            <span class="u">만원/년</span>
+          </div>
+        </div>
+
+        <hr class="divider">
+        <div class="sec-lbl">주택담보대출</div>
+
+        <div class="frow">
+          <div class="fg">
+            <span class="lbl">대출 만기</span>
+            <select id="mTerm" onchange="calc()">
+              <option value="30">30년</option>
+              <option value="40">40년</option>
+              <option value="20">20년</option>
+              <option value="10">10년</option>
+            </select>
+          </div>
+          <div class="fg">
+            <span class="lbl">계약 금리 (실납부 기준)</span>
+            <div class="iw">
+              <input type="number" id="mRate" value="4.5" step="0.1" oninput="calc()">
+              <span class="u">%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 스트레스 DSR -->
+        <div class="stress-row">
+          <div class="stress-label">
+            <span>⚡ 스트레스 DSR 가산금리</span>
+            <span class="badge b-warn" style="text-transform:none;letter-spacing:0">DSR 한도 계산 전용</span>
+          </div>
+          <div class="srt-wrap">
+            <div class="srt-row">
+              <span>수도권·규제지역 주담대</span>
+              <strong>3.00%</strong>
+              <span class="badge b-cap" style="text-transform:none;letter-spacing:0">2025.10.16~</span>
+            </div>
+            <div class="srt-row">
+              <span>비수도권 주담대</span>
+              <strong>0.75%</strong>
+              <span class="badge b-warn" style="text-transform:none;letter-spacing:0">~2026.6.30 유예</span>
+            </div>
+            <div class="srt-row">
+              <span>신용대출 (전국)</span>
+              <strong>1.50%</strong>
+              <span class="badge b-info" style="text-transform:none;letter-spacing:0">3단계 일괄</span>
+            </div>
+          </div>
+          <div class="frow" style="margin-top:.55rem">
+            <div class="fg">
+              <span class="lbl">주담대 가산금리 <span style="font-weight:400;text-transform:none">(지역 변경 시 자동)</span></span>
+              <div class="iw">
+                <input type="number" id="stressRate" value="3.0" step="0.05" min="0" oninput="calc()">
+                <span class="u">%</span>
+              </div>
+            </div>
+            <div class="fg">
+              <span class="lbl">신용대출 가산금리</span>
+              <div class="iw">
+                <input type="number" id="cStressRate" value="1.5" step="0.05" min="0" oninput="calc()">
+                <span class="u">%</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:.55rem;margin-top:.45rem;flex-wrap:wrap">
+            <div class="stress-eff">주담대 DSR 금리: <strong id="r-effRate">—</strong></div>
+            <div class="stress-eff">신용대출 DSR 금리: <strong id="r-cEffRate">—</strong></div>
+          </div>
+          <div class="stress-note">
+            DSR 한도 산정에만 가산금리 적용 — 실납부 월상환액은 계약금리 기준 · 출처: 금융위원회 2025.10
+          </div>
+        </div>
+
+        <div class="fg">
+          <span class="lbl">LTV 특례 여부</span>
+          <select id="ltvType" onchange="calc()">
+            <option value="normal">일반 LTV</option>
+            <option value="first">생애최초 특례 LTV 80% (수도권 6억↓ / 지방 5억↓)</option>
+          </select>
+        </div>
+
+        <!-- 서울 가격별 한도 -->
+        <div id="seoulCapInfo" style="display:none;margin-top:.5rem">
+          <table class="seoul-table">
+            <thead>
+              <tr><th>매수가</th><th>주요 은행 한도</th><th>적용</th></tr>
+            </thead>
+            <tbody>
+              <tr id="srow1"><td>15억 이하</td><td>최대 <strong>6억</strong></td><td id="srow1s">—</td></tr>
+              <tr id="srow2"><td>15~25억</td><td>최대 <strong>4억</strong></td><td id="srow2s">—</td></tr>
+              <tr id="srow3"><td>25억 초과</td><td>최대 <strong>2억</strong></td><td id="srow3s">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <hr class="divider">
+        <div class="sec-lbl">신용대출 (DSR 잔여한도 활용)</div>
+
+        <div class="frow">
+          <div class="fg">
+            <span class="lbl">신용대출 금리</span>
+            <div class="iw">
+              <input type="number" id="cRate" value="5.5" step="0.1" oninput="calc()">
+              <span class="u">%</span>
+            </div>
+          </div>
+          <div class="fg">
+            <span class="lbl">신용대출 만기</span>
+            <select id="cTerm" onchange="calc()">
+              <option value="5">5년 (분할상환)</option>
+              <option value="3">3년 (분할상환)</option>
+              <option value="1">1년 (만기일시)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- DSR 시각화 -->
+        <div class="result-box">
+          <div class="rb-title">DSR 사용 현황</div>
+          <div class="dsr-labels">
+            <span>0%</span>
+            <span style="color:var(--red);font-weight:700">한도 40%</span>
+            <span>100%</span>
+          </div>
+          <div class="dsr-track">
+            <div class="dsr-fill" id="dsrFill" style="width:0%;background:var(--green)"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.74rem;margin-top:.2rem">
+            <span>기존부채 <strong id="dsrExist">0%</strong></span>
+            <span>주담대 <strong id="dsrMortg">0%</strong></span>
+            <span>신용대출 <strong id="dsrCredit">0%</strong></span>
+            <span style="color:var(--green)">잔여 <strong id="dsrLeft">0%</strong></span>
+          </div>
+        </div>
+
+        <!-- 대출 결과 -->
+        <div class="result-box" style="margin-top:.7rem">
+          <div class="rb-title">대출 한도 계산</div>
+          <div class="ri">
+            <span class="rl">LTV 기반 한도 <span id="r-ltvPct" class="badge b-info"></span></span>
+            <span class="rv" id="r-ltvBased">—</span>
+          </div>
+          <div class="ri" id="row-seoulCap" style="display:none">
+            <span class="rl">서울 가격별 절대 한도 <span class="badge b-cap" style="text-transform:none;letter-spacing:0">주요銀 기준</span></span>
+            <span class="rv" style="color:#9d174d" id="r-seoulCap">—</span>
+          </div>
+          <div class="ri">
+            <span class="rl">실제 LTV 한도 <span id="r-ltvCapBadge"></span></span>
+            <span class="rv" id="r-ltvLim">—</span>
+          </div>
+          <div class="ri">
+            <span class="rl">DSR 계산 적용금리 <span class="badge b-warn" style="text-transform:none;letter-spacing:0">계약+스트레스</span></span>
+            <span class="rv" id="r-dsrRate">—</span>
+          </div>
+          <div class="ri"><span class="rl">DSR 한도 주담대</span><span class="rv" id="r-dsrMortg">—</span></div>
+          <div class="ri">
+            <span class="rl">가능 주담대 <span class="badge b-purple" style="text-transform:none;letter-spacing:0">min(LTV,DSR)</span></span>
+            <span class="rv" style="color:var(--purple)" id="r-actMortg">—</span>
+          </div>
+          <div class="ri">
+            <span class="rl">DSR 잔여 신용대출 <span id="r-creditLimitBadge"></span></span>
+            <span class="rv" id="r-creditCap">—</span>
+          </div>
+          <div class="rt"><span>총 대출 가능 금액</span><span class="rv" style="color:var(--purple)" id="r-totalLoan">—</span></div>
+        </div>
+        <div class="note">
+          서울 LTV: 9억↓ 50% / 9억 초과분 30% · 수도권 조정 50% · 비조정 70% · DSR 40% 은행권 기준 ·
+          서울 가격별 절대한도는 주요 시중은행 실무 기준 (금융기관마다 상이) ·
+          스트레스 DSR(현행): 수도권·규제지역 주담대 +3.00%(2025.10.16~) / 비수도권 +0.75%(~2026.6.30 유예) / 신용대출 +1.50% —
+          DSR 한도 산정에만 가산, 실납부액은 계약금리 기준 ·
+          신용대출 연소득 1배 상한 적용 (금융당국 가이드라인 2021.10~, 은행권 공통)
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════════════════ 자금 조달 요약 ════════════════════ -->
+    <div class="card c-sum">
+      <div class="card-head">
+        <div class="card-ico">📊</div>
+        <div class="card-ttl">
+          <h2>자금 조달 요약</h2>
+          <small>총 필요자금과 조달 가능자금 비교</small>
+        </div>
+        <span class="card-head-badge">Summary</span>
+      </div>
+      <div class="card-sep"></div>
+      <div class="card-body">
+
+        <!-- 총 필요자금 -->
+        <div class="result-box">
+          <div class="rb-title" style="color:var(--red)">총 필요자금</div>
+          <div class="sum-row"><span class="sl">매수 가격</span><span class="sv" id="s-buyP">—</span></div>
+          <div class="sum-row"><span class="sl">취득세 + 지방교육세 + 농특세</span><span class="sv" id="s-taxes">—</span></div>
+          <div class="sum-row"><span class="sl">중개수수료 (매수)</span><span class="sv" id="s-buyBrok">—</span></div>
+          <div class="sum-row"><span class="sl">기타 비용</span><span class="sv" id="s-other">—</span></div>
+          <div class="sum-total">
+            <span>총 필요자금</span>
+            <span style="color:var(--red)" id="s-totalNeed">—</span>
+          </div>
+        </div>
+
+        <!-- 총 조달 가능자금 -->
+        <div class="result-box" style="margin-top:.75rem">
+          <div class="rb-title" style="color:var(--green)">총 조달 가능자금</div>
+          <div class="sum-row"><span class="sl">순 매도금액 (기존 부동산)</span><span class="sv" style="color:var(--green)" id="s-netSell">—</span></div>
+          <div class="sum-row"><span class="sl">보유 현금</span><span class="sv" id="s-cash">—</span></div>
+          <div class="sum-row"><span class="sl">주택담보대출</span><span class="sv" style="color:var(--purple)" id="s-mortg">—</span></div>
+          <div class="sum-row"><span class="sl">신용대출</span><span class="sv" style="color:var(--purple)" id="s-credit">—</span></div>
+          <div class="sum-total">
+            <span>총 조달 가능자금</span>
+            <span style="color:var(--green)" id="s-totalAvail">—</span>
+          </div>
+        </div>
+
+        <!-- 갭 (크게 표시) -->
+        <div id="gapBox" class="gap-box gap-ok" style="display:none">
+          <span id="gapLabel">—</span>
+          <span id="gapAmt">—</span>
+        </div>
+
+        <!-- 자금 구성 바 -->
+        <div id="fundBarWrap" class="fund-section" style="display:none">
+          <div class="sec-lbl" style="margin-top:.2rem">자금 구성 비율</div>
+          <div class="bar-wrap" id="fundBar"></div>
+          <div class="bar-legend" id="barLegend"></div>
+        </div>
+
+        <!-- 자기자본 비율 -->
+        <div id="equityRatioWrap" style="display:none;margin-top:.85rem">
+          <div class="result-box">
+            <div class="rb-title">자기자본 vs 타인자본</div>
+            <div class="ri"><span class="rl">자기자본 (현금+매도수익)</span><span class="rv" id="r-equity">—</span></div>
+            <div class="ri"><span class="rl">타인자본 (총 대출)</span><span class="rv" id="r-debt">—</span></div>
+            <div class="ri"><span class="rl">자기자본 비율</span><span class="rv" id="r-equityRatio">—</span></div>
+            <div class="ri"><span class="rl">예상 월 원리금 상환액</span><span class="rv" id="r-monthlyPmt">—</span></div>
+            <div id="monthlyBreakdown" style="display:none">
+              <div class="ri" style="padding-left:1.1rem">
+                <span class="rl" style="font-size:.78rem;color:var(--t3)">∟ 주담대 월상환 <span id="r-mMortgRate" style="font-weight:400"></span></span>
+                <span class="rv" style="font-size:.82rem;color:var(--t2)" id="r-mMortg">—</span>
+              </div>
+              <div class="ri" id="row-mCredit" style="padding-left:1.1rem">
+                <span class="rl" style="font-size:.78rem;color:var(--t3)">∟ 신용대출 월상환 <span id="r-mCreditRate" style="font-weight:400"></span></span>
+                <span class="rv" style="font-size:.82rem;color:var(--t2)" id="r-mCredit">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note" style="margin-top:.85rem">
+          ※ 본 계산기는 참고용입니다. 세금 및 대출한도는 세무사·법무사·금융기관 상담을 통해 정확히 확인하세요.
+          양도세는 개인별 상황(소득 합산·감면 여부)에 따라 달라질 수 있습니다.
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /grid-2 row2 -->
+</div><!-- /wrap -->
+
+<!-- ════════════════════════════════════ JAVASCRIPT ════════════════════════════════════ -->
+<script>
+"use strict";
+
+/* ────────── HELPERS ────────── */
+function m(id){ return document.getElementById(id); }
+function setHtml(id,h){ const e=m(id); if(e) e.innerHTML=h; }
+function setText(id,t){ const e=m(id); if(e) e.textContent=t; }
+function show(id){ m(id).style.display=''; }
+function hide(id){ m(id).style.display='none'; }
+
+function fmt2(v) {
+  if (v===null||v===undefined||isNaN(v)) return '—';
+  const r=Math.round(v);
+  if (r===0) return '0만원';
+  const neg=r<0, abs=Math.abs(r), sign=neg?'−':'';
+  if (abs>=10000) {
+    const eok=(abs/10000).toFixed(2);
+    return `${sign}${Number(eok).toLocaleString()}억<span style="font-size:.78em;opacity:.7">(${abs.toLocaleString()}만)</span>`;
+  }
+  return `${sign}${abs.toLocaleString()}만원`;
+}
+
+/* ────────── ① 시나리오 → 취득세 파싱 ────────── */
+// homeCount value → { hc: 취득세 계산용 보유수, canLoan: 대출가능 여부 }
+function parseScenario(val, isAdj) {
+  switch(val) {
+    case '0':      return { hc: 0, canLoan: true,  label: '무주택' };
+    case '0_sell': return { hc: 0, canLoan: true,  label: '무주택(매도후)' };
+    case '1_temp': return { hc: 0, canLoan: true,  label: '일시적2주택' };  // 기본세율, 대출가능
+    case '1_perm': return { hc: 1, canLoan: !isAdj, label: '1주택→2주택' };
+    case '2':      return { hc: 2, canLoan: false,  label: '2주택→3주택' };
+    case '3plus':  return { hc: 3, canLoan: false,  label: '3주택+' };
+    default:       return { hc: 0, canLoan: true,  label: '무주택' };
+  }
+}
+
+/* ────────── ① 시나리오 힌트 갱신 ────────── */
+function updateHCHint() {
+  const val = m('homeCount').value;
+  const el  = m('hcHint');
+  const H = {
+    '0':
+      ['hc-ok',   '✅ 취득세: 기본세율 (1~3%) 적용'],
+    '0_sell':
+      ['hc-ok',   '✅ 취득세: 기본세율 (1~3%) 적용 — 매도 완료 후 취득이므로 무주택 기준. 매도 先 매수 後 순서여야 합니다.'],
+    '1_temp':
+      ['hc-warn', '⚠️ 취득세: 기본세율 적용 (일시적 2주택 특례). 단, 3년 내 기존 주택 미처분 시 취득세 중과세 차액 추징되니 반드시 처분 일정 확인하세요.'],
+    '1_perm':
+      ['hc-bad',  '🚫 취득세: 조정지역 8% / 비조정 기본세율 적용. 조정지역에서는 주담대 원칙 불가. 비조정은 기본 LTV 적용.'],
+    '2':
+      ['hc-bad',  '🚫 취득세: 조정지역 12% / 비조정 8% 적용. 규제지역에서는 주담대 불가.'],
+    '3plus':
+      ['hc-bad',  '🚫 취득세: 12% (조정/비조정 동일). 주담대 불가.'],
+  };
+  const [cls, txt] = H[val] || H['0'];
+  el.className = `hc-hint ${cls}`;
+  el.textContent = txt;
+}
+
+/* ────────── ③ 날짜 자동포맷 (YYYYMMDD → YYYY-MM-DD) ────────── */
+function autoDateFmt(el) {
+  const cur = el.value;
+  // 하이픈 제거 후 숫자만 추출
+  let v = cur.replace(/\D/g, '').slice(0, 8);
+  // YYYY-MM-DD 형태로 자동 삽입
+  if (v.length > 4)  v = v.slice(0, 4) + '-' + v.slice(4);
+  if (v.length > 7)  v = v.slice(0, 7) + '-' + v.slice(7);
+  el.value = v;
+  recalcDates();
+}
+
+/* ────────── ③ 날짜로 보유·거주기간 계산 ────────── */
+function yearsFromDates(start, end) {
+  if (!start || !end) return 0;
+  // YYYY-MM-DD (10자) 완성된 경우만 계산
+  if (start.length < 10 || end.length < 10) return 0;
+  const s = new Date(start), e = new Date(end);
+  if (isNaN(s) || isNaN(e) || e < s) return 0;
+  return (e - s) / (1000*60*60*24*365.25);
+}
+function formatYears(y) {
+  if (!y || y <= 0) return '—';
+  const yr = Math.floor(y), mo = Math.round((y - yr) * 12);
+  if (mo === 0) return `${yr}년`;
+  if (yr === 0) return `${mo}개월`;
+  return `${yr}년 ${mo}개월`;
+}
+
+let _holdYr = 0, _liveYr = 0;
+
+function recalcDates() {
+  const acq  = m('acqDate').value;
+  const live = m('liveDate').value;
+  const sale = m('saleDate').value;
+
+  _holdYr = acq  && sale ? yearsFromDates(acq,  sale) : 0;
+  _liveYr = live && sale ? yearsFromDates(live, sale) : 0;
+
+  const show = (acq || live) && sale;
+  m('dateResult').style.display = show ? 'flex' : 'none';
+  if (show) {
+    setText('calcHoldYr', acq  && sale ? formatYears(_holdYr) : '날짜 입력 필요');
+    setText('calcLiveYr', live && sale ? formatYears(_liveYr) : '입주일 미입력');
+  }
+  calc();
+}
+
+/* ────────── 취득세 ────────── */
+function baseAcqRate(priceW) {
+  const p = priceW * 10000;
+  if (p <= 6e8) return 0.01;
+  if (p <= 9e8) return (p * 2 / 3e8 - 3) / 100;
+  return 0.03;
+}
+function calcAcqTax(priceW, hc, isAdj, isFirst, isOver85) {
+  if (!priceW) return { acq:0, edu:0, rural:0, disc:0, total:0, rate:0 };
+  const p = priceW * 10000;
+  let rate;
+  if (hc <= 1)      rate = baseAcqRate(priceW);
+  else if (hc === 2) rate = isAdj ? 0.08 : baseAcqRate(priceW);
+  else               rate = isAdj ? 0.12 : 0.08;
+
+  const acq   = Math.round(p * rate / 10000);
+  const edu   = Math.round(acq * 0.1);
+  const rural = isOver85 ? Math.round(p * 0.002 / 10000) : 0;
+  let disc = 0;
+  if (isFirst && hc === 0) {
+    disc = Math.min(Math.round(p * baseAcqRate(priceW) / 10000), 200);
+  }
+  return { acq, edu, rural, disc, total: acq + edu + rural - disc, rate };
+}
+
+/* ────────── 중개수수료 ────────── */
+function broker(priceW) {
+  if (!priceW || priceW <= 0) return 0;
+  const p = priceW * 10000;
+  if (p <  5e7)   return Math.min(Math.round(p * 0.006 / 10000), 25);
+  if (p <  2e8)   return Math.min(Math.round(p * 0.005 / 10000), 80);
+  if (p <  9e8)   return Math.round(p * 0.004 / 10000);
+  if (p < 1.2e9)  return Math.round(p * 0.005 / 10000);
+  if (p < 1.5e9)  return Math.round(p * 0.006 / 10000);
+  return Math.round(p * 0.007 / 10000);
+}
+
+/* ────────── 양도세 누진세율 ────────── */
+function progTax(amt) {
+  const b = [
+    [14000000,   0.06,       0],
+    [50000000,   0.15, 1260000],
+    [88000000,   0.24, 5760000],
+    [150000000,  0.35,15440000],
+    [300000000,  0.38,19940000],
+    [500000000,  0.40,25940000],
+    [1000000000, 0.42,35940000],
+    [Infinity,   0.45,65940000],
+  ];
+  for (const [lim,r,d] of b)
+    if (amt <= lim) return Math.max(0, Math.round(amt*r - d));
+  return 0;
+}
+
+/* ────────── 양도소득세 ────────── */
+function calcCGT(sellW, basisW, holdYr, liveYr, isAdj, hc) {
+  const zero = { tax:0, cgain:0, ltDeductAmt:0, ltDeductRate:0, exempt:true, reason:'', taxableGain:0 };
+  if (!sellW || sellW <= 0) return zero;
+  const sell  = sellW * 10000;
+  const basis = (basisW||0) * 10000;
+  const brokF = broker(sellW) * 10000;
+  const cgain = sell - basis - brokF;
+  if (cgain <= 0) return { ...zero, cgain:Math.round(cgain/10000), exempt:false, reason:'양도차익 없음' };
+
+  const homeCountN = parseInt(hc);
+  let taxFrac = 1, reason = '';
+
+  if (homeCountN === 1) {
+    const okNonAdj = !isAdj && holdYr >= 2;
+    const okAdj    =  isAdj && holdYr >= 2 && liveYr >= 2;
+    if (okNonAdj || okAdj) {
+      if (sell <= 1.2e9)
+        return { tax:0, cgain:Math.round(cgain/10000), ltDeductAmt:0, ltDeductRate:0, exempt:true, reason:'1세대1주택 전액 비과세', taxableGain:0 };
+      taxFrac = (sell - 1.2e9) / sell;
+      reason  = '1세대1주택 부분비과세 (12억 초과분 과세)';
+    }
+  }
+
+  if (holdYr < 1) {
+    const t = Math.round(cgain * taxFrac * 0.70 / 10000);
+    return { tax:Math.round(t*1.1), cgain:Math.round(cgain/10000), ltDeductAmt:0, ltDeductRate:0, exempt:false, reason:reason||'단기과세 70% (1년 미만)', taxableGain:Math.round(cgain*taxFrac/10000) };
+  }
+  if (holdYr < 2) {
+    const t = Math.round(cgain * taxFrac * 0.60 / 10000);
+    return { tax:Math.round(t*1.1), cgain:Math.round(cgain/10000), ltDeductAmt:0, ltDeductRate:0, exempt:false, reason:reason||'단기과세 60% (1~2년)', taxableGain:Math.round(cgain*taxFrac/10000) };
+  }
+
+  let ltRate = 0;
+  const hy = Math.floor(holdYr), ly = Math.floor(liveYr);
+  if (homeCountN === 1 && holdYr >= 3)
+    ltRate = Math.min(Math.min(hy,10)*0.04 + Math.min(ly,10)*0.04, 0.80);
+  else if (holdYr >= 3)
+    ltRate = Math.min(0.06 + (hy-3)*0.02, 0.30);
+
+  const taxable  = cgain * taxFrac;
+  const ltDeduct = taxable * ltRate;
+  const taxBase  = Math.max(taxable - ltDeduct - 2500000, 0);
+  const rawTax   = progTax(taxBase);
+
+  return {
+    tax: Math.round(rawTax * 1.10 / 10000),
+    cgain: Math.round(cgain/10000),
+    ltDeductAmt: Math.round(ltDeduct/10000),
+    ltDeductRate: ltRate,
+    exempt: false, reason,
+    taxableGain: Math.round(taxBase/10000),
+  };
+}
+
+/* ────────── 원리금 계산 ────────── */
+function loanFromPmt(pmtW, rateAnn, termYr) {
+  const r = rateAnn/100/12, n = termYr*12;
+  if (r === 0) return Math.round(pmtW*n);
+  return Math.round(pmtW*(1-Math.pow(1+r,-n))/r);
+}
+function pmtFromLoan(principalW, rateAnn, termYr) {
+  const r = rateAnn/100/12, n = termYr*12;
+  if (r === 0) return Math.round(principalW/n);
+  return Math.round(principalW * r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1));
+}
+
+/* ────────── ④ 서울 가격별 절대 한도 ────────── */
+function getSeoulAbsCap(priceW, region) {
+  if (region !== 'seoul') return Infinity;
+  const p = priceW * 10000;
+  if (p <= 1.5e9) return 60000;  // 15억 이하 → 6억
+  if (p <= 2.5e9) return 40000;  // 25억 이하 → 4억
+  return 20000;                   // 25억 초과 → 2억
+}
+
+/* ────────── ④ LTV 계산 (지역별) ────────── */
+function getLtvBased(priceW, region, ltvType) {
+  const p = priceW * 10000;
+  if (ltvType === 'first') {
+    const isMetro = region === 'seoul' || region === 'metro';
+    const limit   = isMetro ? 6e8 : 5e8;
+    if (p <= limit) return Math.round(p * 0.80 / 10000);
+    // 한도 초과 → 일반 LTV 적용
+  }
+  if (region === 'seoul') {
+    // 9억까지 50%, 9억 초과분 30%
+    const base  = Math.min(p, 9e8) * 0.50;
+    const extra = Math.max(0, p - 9e8) * 0.30;
+    return Math.round((base + extra) / 10000);
+  }
+  if (region === 'metro') return Math.round(p * 0.50 / 10000);
+  return Math.round(p * 0.70 / 10000);
+}
+
+/* ────────── 대출 계산 ────────── */
+function calcLoan(incW, existW, buyPriceW, region, homeScen, mTerm, mRate, stressRate, cStressRate, ltvType, cRate, cTerm) {
+  const zero = { ltvBased:0, seoulCap:Infinity, ltvLim:0, dsrMortg:0, actMortg:0, creditCap:0, dsrPcts:{exist:0,mortg:0,credit:0,left:100}, monthlyMortg:0, canLoan:true, dsrEffRate:4.5 };
+  if (!incW || !buyPriceW) return zero;
+
+  const isAdj     = region === 'seoul' || region === 'metro';
+  const { canLoan } = parseScenario(homeScen, isAdj);
+
+  if (!canLoan && isAdj) {
+    return { ...zero, ltvBased:0, seoulCap:Infinity, ltvLim:0, dsrMortg:0, actMortg:0, canLoan:false };
+  }
+
+  const ltvBased = getLtvBased(buyPriceW, region, ltvType);
+  const seoulCap = getSeoulAbsCap(buyPriceW, region);
+  const ltvLim   = Math.min(ltvBased, seoulCap);
+
+  const mr     = parseFloat(mRate) || 4.5;
+  const sr     = parseFloat(stressRate) || 0;
+  const mr_dsr = mr + sr;           // ← DSR 한도 계산용 (스트레스 금리 가산)
+  const mt     = parseInt(mTerm) || 30;
+  const cr     = parseFloat(cRate) || 5.5;
+  const ct     = parseInt(cTerm) || 5;
+
+  const maxAnnW  = incW * 0.40;
+  const existAnn = existW || 0;
+  const availForMortg = maxAnnW - existAnn;
+  if (availForMortg <= 0) return { ...zero, ltvBased, seoulCap, ltvLim, dsrMortg:0, actMortg:0, canLoan, dsrEffRate:mr_dsr };
+
+  // DSR 한도: 스트레스 금리로 계산 → 대출 한도 ↓
+  const dsrMortg   = loanFromPmt(availForMortg/12, mr_dsr, mt);
+  const actMortg   = Math.min(ltvLim, dsrMortg);
+
+  // 실납부 월상환액: 계약금리로 계산 (스트레스 금리 미적용)
+  const mthlyMortg = pmtFromLoan(actMortg, mr, mt);
+  const mortgAnn   = mthlyMortg * 12;
+
+  // 신용대출 DSR 잔여 (신용대출 스트레스 금리 별도 적용 — 전국 1.5%)
+  const csr    = parseFloat(cStressRate) || 0;
+  const cr_dsr = cr + csr;
+  const remainW = Math.max(maxAnnW - existAnn - mortgAnn, 0);
+  let creditCapDsr = 0, creditCap = 0, creditAnn = 0;
+  if (remainW > 0) {
+    creditCapDsr = loanFromPmt(remainW/12, cr_dsr, ct);
+    // ★ 현행 정책: 신용대출 잔액 ≤ 연소득 1배 (금융당국 가이드라인 2021.10~)
+    const creditCapIncome = incW;            // 연소득 1배 상한
+    creditCap = Math.min(creditCapDsr, creditCapIncome);
+    creditAnn = pmtFromLoan(creditCap, cr, ct) * 12; // 실납부는 계약금리
+  }
+  // 어떤 제약이 binding됐는지 — UI 배지 표시용
+  const creditLimitedBy = creditCapDsr > 0 && creditCap < creditCapDsr ? 'income' : 'dsr';
+
+  const totalUsed = existAnn + mortgAnn + creditAnn;
+  const dsrPcts = {
+    exist:  Math.round(existAnn / incW * 1000) / 10,
+    mortg:  Math.round(mortgAnn / incW * 1000) / 10,
+    credit: Math.round(creditAnn / incW * 1000) / 10,
+    left:   Math.max(0, Math.round((maxAnnW - totalUsed) / incW * 1000) / 10),
+  };
+
+  return { ltvBased, seoulCap, ltvLim, dsrMortg, actMortg, creditCap, creditLimitedBy, dsrPcts, monthlyMortg:mthlyMortg, canLoan, dsrEffRate:mr_dsr };
+}
+
+/* ════════════════════════════════════════ MAIN CALC ════════════════════════════════════════ */
+function calc() {
+
+  /* ── 입력값 ── */
+  const buyPrice  = parseFloat(m('buyPrice').value)  || 0;
+  const region    = m('region').value;
+  const homeScen  = m('homeCount').value;
+  const areaSize  = m('areaSize').value;
+  const isFirst   = m('firstHome').checked;
+  const otherCost = parseFloat(m('otherCost').value) || 0;
+  const inclBuyBr = m('inclBuyBroker').checked;
+
+  const sellOn      = m('sellToggle').checked;
+  const sellP       = parseFloat(m('sellPrice').value)    || 0;
+  const sellBas     = parseFloat(m('sellBasis').value)    || 0;
+  const sellMortgBal= parseFloat(m('sellMortgBal').value) || 0;
+  const sellArea    = m('sellArea').value;
+  const sellHC      = m('sellHomeCount').value;
+  const penalty     = parseFloat(m('penalty').value)      || 0;
+  const inclSellBr  = m('inclSellBroker').checked;
+
+  const income     = parseFloat(m('income').value)     || 0;
+  const cash       = parseFloat(m('cash').value)       || 0;
+  const existDebt  = parseFloat(m('existDebt').value)  || 0;
+  const mTerm      = m('mTerm').value;
+  const mRate      = m('mRate').value;
+  const stressRate  = m('stressRate').value;
+  const cStressRate = m('cStressRate').value;
+  const ltvType     = m('ltvType').value;
+  const cRate      = m('cRate').value;
+  const cTerm      = m('cTerm').value;
+
+  const isAdj = region === 'seoul' || region === 'metro';
+  const isO85 = areaSize === 'o85';
+  const { hc } = parseScenario(homeScen, isAdj);
+
+  /* ── 매수가 힌트 ── */
+  if (buyPrice > 0) {
+    m('buyPriceHint').style.display = 'inline-block';
+    m('buyPriceHint').textContent = buyPrice >= 10000
+      ? `= ${(buyPrice/10000).toFixed(2)}억원`
+      : `= ${buyPrice.toLocaleString()}만원`;
+  } else {
+    m('buyPriceHint').style.display = 'none';
+  }
+
+  /* ── 취득세 ── */
+  const acq     = calcAcqTax(buyPrice, hc, isAdj, isFirst, isO85);
+  const buyBrok = inclBuyBr ? broker(buyPrice) : 0;
+  const totalBuy= buyPrice + acq.total + buyBrok + otherCost;
+
+  const ratePct = (acq.rate*100).toFixed(2).replace(/\.?0+$/,'');
+  m('r-acqRateBadge').innerHTML = acq.rate>0 ? `<span class="badge b-info">${ratePct}%</span>` : '';
+  setHtml('r-buyPrice', fmt2(buyPrice));
+  setHtml('r-acqTax',   fmt2(acq.acq));
+  setHtml('r-eduTax',   fmt2(acq.edu));
+  setHtml('r-ruralTax', fmt2(acq.rural));
+  m('row-rural').style.display = isO85 ? 'flex' : 'none';
+  if (isFirst && hc===0 && acq.disc>0) {
+    m('row-discount').style.display = 'flex';
+    setHtml('r-discount', `− ${fmt2(acq.disc)}`);
+  } else {
+    m('row-discount').style.display = 'none';
+  }
+  setHtml('r-buyBroker', inclBuyBr ? fmt2(buyBrok) : '<span style="opacity:.5">미포함</span>');
+  m('row-buyBroker').style.opacity = inclBuyBr ? '1' : '.5';
+  setHtml('r-otherCost', fmt2(otherCost));
+  setHtml('r-totalBuy',  fmt2(totalBuy));
+
+  /* ── 매도 섹션 ── */
+  let netSell=0, cgtTax=0, sellBrokAmt=0;
+  if (sellOn && sellP > 0) {
+    const holdYr = _holdYr || 0;
+    const liveYr = _liveYr || 0;
+    const cgt    = calcCGT(sellP, sellBas, holdYr, liveYr, sellArea==='adj', sellHC);
+    cgtTax       = cgt.tax;
+    sellBrokAmt  = inclSellBr ? broker(sellP) : 0;
+    netSell      = sellP - cgtTax - sellBrokAmt - penalty - sellMortgBal;
+
+    setHtml('r-sellPrice', fmt2(sellP));
+    setHtml('r-cgain',     fmt2(cgt.cgain));
+    setHtml('r-exempt',    cgt.exempt
+      ? `<span class="badge b-ok">비과세 해당</span>`
+      : cgt.reason
+        ? `<span class="badge b-warn">${cgt.reason}</span>`
+        : `<span class="badge b-danger">과세 대상</span>`);
+
+    const ltTxt = cgt.ltDeductRate>0
+      ? `${fmt2(cgt.ltDeductAmt)} (${(cgt.ltDeductRate*100).toFixed(0)}%)`
+      : '해당 없음';
+    setHtml('r-ltDeduct', ltTxt);
+    setHtml('r-cgt',      cgtTax>0 ? fmt2(cgtTax) : '0만원 (비과세)');
+    setHtml('r-sellBroker', inclSellBr ? fmt2(sellBrokAmt) : '<span style="opacity:.5">미포함</span>');
+    m('row-sellBroker').style.opacity = inclSellBr ? '1' : '.5';
+    setHtml('r-penalty',  penalty>0 ? fmt2(penalty) : '해당 없음');
+    if (sellMortgBal > 0) {
+      m('row-sellMortg').style.display = 'flex';
+      setHtml('r-sellMortgBal', `− ${fmt2(sellMortgBal)}`);
+      // 기존 주담대 잔액 힌트
+      const hint = m('mortgBalHint');
+      const ratio = sellP > 0 ? (sellMortgBal/sellP*100).toFixed(1) : 0;
+      hint.style.display = 'block';
+      hint.textContent = `매도가 대비 ${ratio}% — 순 수령액에서 자동 차감됩니다`;
+    } else {
+      m('row-sellMortg').style.display = 'none';
+      m('mortgBalHint').style.display = 'none';
+    }
+    setHtml('r-netSell',  fmt2(netSell));
+  }
+
+  /* ── 대출 계산 ── */
+  const loan = calcLoan(income, existDebt, buyPrice, region, homeScen, mTerm, mRate, stressRate, cStressRate, ltvType, cRate, cTerm);
+
+  // ④ 서울 한도 테이블 갱신
+  const isSeoul = region === 'seoul';
+  m('seoulCapInfo').style.display = isSeoul && buyPrice>0 ? 'block' : 'none';
+  if (isSeoul && buyPrice>0) {
+    const p = buyPrice*10000;
+    const row = p<=1.5e9 ? 1 : p<=2.5e9 ? 2 : 3;
+    [1,2,3].forEach(i => {
+      const r = m(`srow${i}`);
+      const s = m(`srow${i}s`);
+      if (i===row) {
+        r.className = 'active';
+        s.textContent = '← 적용';
+      } else {
+        r.className = '';
+        s.textContent = '';
+      }
+    });
+  }
+
+  // LTV 결과
+  const ltvPctStr = region==='seoul'
+    ? (buyPrice*10000<=9e8 ? 'LTV 50%' : 'LTV 50%↓/30%↑')
+    : region==='metro' ? 'LTV 50%' : 'LTV 70%';
+  m('r-ltvPct').textContent = ltvType==='first' ? 'LTV 80%특례' : ltvPctStr;
+  setHtml('r-ltvBased', fmt2(loan.ltvBased));
+
+  if (isSeoul && loan.seoulCap < Infinity) {
+    m('row-seoulCap').style.display = 'flex';
+    setHtml('r-seoulCap', fmt2(loan.seoulCap));
+    // binding constraint badge
+    const capBinding = loan.seoulCap < loan.ltvBased;
+    m('r-ltvCapBadge').innerHTML = capBinding
+      ? `<span class="badge b-cap">가격별 한도 적용</span>`
+      : `<span class="badge b-info">LTV 적용</span>`;
+  } else {
+    m('row-seoulCap').style.display = 'none';
+    m('r-ltvCapBadge').innerHTML = '';
+  }
+
+  // 스트레스 가산금리 표시
+  const mr_val  = parseFloat(mRate)      || 4.5;
+  const sr_val  = parseFloat(stressRate) || 0;
+  const cr_val  = parseFloat(cRate)      || 5.5;
+  const csr_val = parseFloat(cStressRate)|| 0;
+  const effRate  = (mr_val + sr_val).toFixed(2);
+  const cEffRate = (cr_val + csr_val).toFixed(2);
+  setText('r-effRate',  `${effRate}%`);   // 주담대 DSR 금리 (스트레스 박스 내)
+  setText('r-cEffRate', `${cEffRate}%`);  // 신용대출 DSR 금리
+  setHtml('r-dsrRate', sr_val > 0
+    ? `${mr_val.toFixed(2)}% + ${sr_val.toFixed(2)}% = <strong>${effRate}%</strong>`
+    : `<span style="opacity:.6">${mr_val.toFixed(2)}% (가산금리 없음)</span>`);
+
+  setHtml('r-ltvLim',   loan.canLoan ? fmt2(loan.ltvLim) : '<span class="badge b-danger">주담대 불가</span>');
+  setHtml('r-dsrMortg', loan.canLoan ? fmt2(loan.dsrMortg) : '—');
+  setHtml('r-actMortg', loan.canLoan ? fmt2(loan.actMortg) : '<span style="color:var(--red);font-size:.8rem">조정지역 다주택 불가</span>');
+  setHtml('r-creditCap', fmt2(loan.creditCap));
+  // 신용대출 한도 제약 배지
+  if (loan.creditCap > 0) {
+    m('r-creditLimitBadge').innerHTML = loan.creditLimitedBy === 'income'
+      ? `<span class="badge b-warn" style="text-transform:none;letter-spacing:0">연소득 1배 상한 적용</span>`
+      : `<span class="badge b-purple" style="text-transform:none;letter-spacing:0">DSR 한도 적용</span>`;
+  } else {
+    m('r-creditLimitBadge').innerHTML = '';
+  }
+  setHtml('r-totalLoan', fmt2(loan.actMortg + loan.creditCap));
+
+  // DSR 미터
+  const dp = loan.dsrPcts;
+  const usedTot = dp.exist + dp.mortg + dp.credit;
+  const fillColor = usedTot>40?'var(--danger)':usedTot>30?'var(--sum)':'var(--success)';
+  const fill = m('dsrFill');
+  fill.style.width = Math.min(usedTot,100)+'%';
+  fill.style.background = fillColor;
+  setText('dsrExist',  dp.exist+'%');
+  setText('dsrMortg',  dp.mortg+'%');
+  setText('dsrCredit', dp.credit+'%');
+  setText('dsrLeft',   dp.left+'%');
+
+  /* ── 자금 요약 ── */
+  setHtml('s-buyP',     fmt2(buyPrice));
+  setHtml('s-taxes',    fmt2(acq.total));
+  setHtml('s-buyBrok',  inclBuyBr ? fmt2(buyBrok) : '<span style="opacity:.5">미포함</span>');
+  setHtml('s-other',    fmt2(otherCost));
+  setHtml('s-totalNeed',fmt2(totalBuy));
+
+  const netSellDisp = sellOn ? netSell : 0;
+  setHtml('s-netSell',  sellOn ? fmt2(netSell) : '—');
+  setHtml('s-cash',     fmt2(cash));
+  setHtml('s-mortg',    fmt2(loan.actMortg));
+  setHtml('s-credit',   fmt2(loan.creditCap));
+  const totalAvail = netSellDisp + cash + loan.actMortg + loan.creditCap;
+  setHtml('s-totalAvail', fmt2(totalAvail));
+
+  // 갭
+  const gapBox = m('gapBox');
+  if (buyPrice > 0) {
+    gapBox.style.display = 'flex';
+    const gap = totalAvail - totalBuy;
+    if (gap >= 0) {
+      gapBox.className = 'gap-box gap-ok';
+      setText('gapLabel', '✅  여유 자금');
+      setHtml('gapAmt', `+${fmt2(gap)}`);
+    } else {
+      gapBox.className = 'gap-box gap-bad';
+      setText('gapLabel', '⚠️  부족 자금');
+      setHtml('gapAmt', fmt2(gap));
+    }
+  } else {
+    gapBox.style.display = 'none';
+  }
+
+  // 자기자본 비율
+  if (buyPrice > 0) {
+    m('equityRatioWrap').style.display = 'block';
+    const equity = netSellDisp + cash;
+    const debtT  = loan.actMortg + loan.creditCap;
+    const eRatio = totalAvail>0 ? (equity/totalAvail*100).toFixed(1) : '0';
+    setHtml('r-equity',     fmt2(equity));
+    setHtml('r-debt',       fmt2(debtT));
+    setText('r-equityRatio',`${eRatio}%`);
+    const mCredit = loan.creditCap > 0
+      ? pmtFromLoan(loan.creditCap, parseFloat(cRate)||5.5, parseInt(cTerm)||5) : 0;
+    const totalMonthly = loan.monthlyMortg + mCredit;
+    setHtml('r-monthlyPmt', fmt2(totalMonthly) + '/월');
+
+    // 월상환 breakdown
+    const hasPmt = loan.monthlyMortg > 0 || mCredit > 0;
+    m('monthlyBreakdown').style.display = hasPmt ? '' : 'none';
+    if (hasPmt) {
+      const mr_disp = (parseFloat(mRate)||4.5).toFixed(2);
+      const mt_disp = m('mTerm').value || '30';
+      setHtml('r-mMortg', loan.monthlyMortg > 0 ? fmt2(loan.monthlyMortg)+'/월' : '—');
+      setText('r-mMortgRate', `(${mr_disp}%, ${mt_disp}년)`);
+      const cr_disp = (parseFloat(cRate)||5.5).toFixed(2);
+      const ct_disp = m('cTerm').value || '5';
+      m('row-mCredit').style.display = mCredit > 0 ? '' : 'none';
+      setHtml('r-mCredit', mCredit > 0 ? fmt2(mCredit)+'/월' : '—');
+      setText('r-mCreditRate', mCredit > 0 ? `(${cr_disp}%, ${ct_disp}년)` : '');
+    }
+  } else {
+    m('equityRatioWrap').style.display = 'none';
+  }
+
+  // 자금 구성 바
+  const segs = [
+    { v: netSellDisp,      color: '#059669', label: '매도수익' },
+    { v: cash,             color: '#d97706', label: '보유현금' },
+    { v: loan.actMortg,    color: '#7c3aed', label: '주담대'  },
+    { v: loan.creditCap,   color: '#a78bfa', label: '신용대출' },
+  ].filter(s => s.v > 0);
+
+  if (segs.length > 0 && buyPrice > 0) {
+    m('fundBarWrap').style.display = 'block';
+    const tot = segs.reduce((a,s)=>a+s.v, 0);
+    const bar = m('fundBar'); bar.innerHTML = '';
+    const leg = m('barLegend'); leg.innerHTML = '';
+    segs.forEach(s => {
+      const pct = s.v/tot*100;
+      const seg = document.createElement('div');
+      seg.className = 'bar-seg';
+      seg.style.cssText = `width:${pct.toFixed(1)}%;background:${s.color}`;
+      seg.textContent = pct>9 ? `${s.label} ${pct.toFixed(0)}%` : '';
+      bar.appendChild(seg);
+      const li = document.createElement('div');
+      li.className = 'bar-legend-item';
+      li.innerHTML = `<div class="bar-legend-dot" style="background:${s.color}"></div><span><strong>${s.label}</strong>: ${fmt2(s.v)}</span>`;
+      leg.appendChild(li);
+    });
+  } else {
+    m('fundBarWrap').style.display = 'none';
+  }
+}
+
+/* ── 토글 ── */
+function toggleSell() {
+  const on = m('sellToggle').checked;
+  m('sellBody').classList.toggle('collapsed', !on);
+  calc();
+}
+
+/* ── 스트레스 금리 자동 갱신 (지역 변경 시) ── */
+function updateStressRate() {
+  const region = m('region').value;
+  // 수도권·규제지역 3.00% / 비수도권 0.75% (유예 중)
+  const mRates = { seoul: 3.0, metro: 3.0, non: 0.75 };
+  m('stressRate').value = mRates[region] ?? 0.75;
+  // 신용대출 가산금리는 전국 1.5% 고정 — cStressRate 변경 불필요
+}
+
+/* ── 초기화 ── */
+updateHCHint();
+updateStressRate();
+calc();
+</script>
+</body>
+</html>
